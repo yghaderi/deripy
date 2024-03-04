@@ -124,7 +124,7 @@ class AssetPositionProfit:
         -------
         int
         """
-        return round((self.st - self.price * (1 + self.commission.long)) * self.qty,2)
+        return round((self.st * (1 - self.commission.short) - self.price * (1 + self.commission.long)) * self.qty,2)
 
     @property
     def short(self) -> float:
@@ -135,4 +135,4 @@ class AssetPositionProfit:
         -------
         int
         """
-        return round((self.price * (1 - self.commission.short) - self.st) * self.qty,2)
+        return round((self.price * (1 - self.commission.short) - self.st * (1 + self.commission.long)) * self.qty,2)
