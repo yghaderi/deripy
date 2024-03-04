@@ -1,9 +1,9 @@
-from pydantic import BaseModel, validate_call, PositiveFloat
+from pydantic import BaseModel, validate_call
 
 
 class Commission(BaseModel):
-    long: PositiveFloat
-    short: PositiveFloat
+    long: float
+    short: float
 
 
 class OptionPositionProfit:
@@ -48,9 +48,9 @@ class OptionPositionProfit:
         -------
         int
         """
-        return (
+        return round((
             max(self.st - self.k, 0) - self.premium * (1 + self.commission.long)
-        ) * self.qty
+        ) * self.qty, 2)
 
     @property
     def short_call(self) -> float:
@@ -60,9 +60,9 @@ class OptionPositionProfit:
         -------
         int
         """
-        return (
+        return round((
             -max(self.st - self.k, 0) + self.premium * (1 - self.commission.short)
-        ) * self.qty
+        ) * self.qty,2)
 
     @property
     def long_put(self) -> float:
@@ -72,9 +72,9 @@ class OptionPositionProfit:
         -------
         int
         """
-        return (
+        return round((
             max(self.k - self.st, 0) - self.premium * (1 + self.commission.long)
-        ) * self.qty
+        ) * self.qty,2)
 
     @property
     def short_put(self) -> float:
@@ -84,9 +84,9 @@ class OptionPositionProfit:
         -------
         int
         """
-        return (
+        return round((
             -max(self.k - self.st, 0) + self.premium * (1 - self.commission.short)
-        ) * self.qty
+        ) * self.qty,2)
 
 
 class AssetPositionProfit:
@@ -116,7 +116,7 @@ class AssetPositionProfit:
         self.commission = commission
 
     @property
-    def long(self) -> int:
+    def long(self) -> float:
         """
         Calculate long UA position profit.
 
@@ -124,10 +124,10 @@ class AssetPositionProfit:
         -------
         int
         """
-        return (self.st - self.price * (1 + self.commission.long)) * self.qty
+        return round((self.st - self.price * (1 + self.commission.long)) * self.qty,2)
 
     @property
-    def short(self) -> int:
+    def short(self) -> float:
         """
         Calculate short UA position profit.
 
@@ -135,4 +135,4 @@ class AssetPositionProfit:
         -------
         int
         """
-        return (self.price * (1 - self.commission.short) - self.st) * self.qty
+        return round((self.price * (1 - self.commission.short) - self.st) * self.qty,2)
